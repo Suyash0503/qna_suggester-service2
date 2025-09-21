@@ -1,0 +1,16 @@
+# Web Framework
+fastapi
+uvicorn
+
+# Cloud (AWS SDK)
+boto3
+python-dotenv
+
+# NLP
+spacy
+nltk
+requests
+
+# (Optional) Hugging Face transformers for later
+transformers
+torch
