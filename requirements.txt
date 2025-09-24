@@ -14,3 +14,17 @@ requests
 # (Optional) Hugging Face transformers for later
 transformers
 torch
+
+
+#new req:
+python-multipart
+pypdf
+pdfplumber
+python-docx
+sentence-transformers
+numpy
+scikit-learn
+redis
+rq  # or celery[redis]
+pydantic
+loguru
