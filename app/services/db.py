@@ -1,7 +1,9 @@
 import boto3, os
+from dotenv import load_dotenv
+load_dotenv()
 
-AWS_REGION = "us-east-1"
-TABLE = os.getenv("DYNAMO_TABLE", "ResumeAnalyses")
+AWS_REGION = "ca-central-1"
+TABLE = os.getenv("DYNAMO_TABLE", "resumes")
 
 dynamo = boto3.resource("dynamodb", region_name=AWS_REGION)
 table = dynamo.Table(TABLE)

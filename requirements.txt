@@ -28,3 +28,8 @@ redis
 rq  # or celery[redis]
 pydantic
 loguru
+
+
+
+regex
+
