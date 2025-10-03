@@ -1,23 +1,16 @@
-# def run(jd_key: str) -> dict:
-#     # TODO: implement job description parsing
-#     return {
-#         "text": "Sample extracted JD text",
-#         "skills": ["Python", "AWS"]
-#     }
-# services/parse_jd.py
 import io, os, re
 import pdfplumber
 from docx import Document
-from typing import Dict, Any, List
+from typing import Dict, Any
 from .storage import get_object_bytes
-from .parse_resume import SKILL_BANK, EDU_KEYWORDS
+from .constants import SKILL_BANK, EDU_KEYWORDS
 
 def _ext_from_key(key: str) -> str:
     return os.path.splitext(key)[1].lower()
 
 def _text_from_pdf(data: bytes) -> str:
     with pdfplumber.open(io.BytesIO(data)) as pdf:
-        return "\n".join(page.extract_text() or "" for page in pdf.pages)
+        return "\n".join((page.extract_text() or "").strip() for page in pdf.pages)
 
 def _text_from_docx(data: bytes) -> str:
     doc = Document(io.BytesIO(data))
@@ -26,20 +19,21 @@ def _text_from_docx(data: bytes) -> str:
 def _extract(text: str) -> Dict[str, Any]:
     lower = text.lower()
 
-    # Pull a job title from the top line (naive)
+    # Pull job title from first non-empty line
     first_line = next((ln.strip() for ln in text.splitlines() if ln.strip()), "")
     job_title = first_line[:80]
 
+    # Skills & keywords
     required_skills = sorted({s for s in SKILL_BANK if re.search(rf"\b{s}\b", lower)})
-    # keywords (besides skills) — add domain words you care about
     KEYWORDS = {"lead", "senior", "cloud", "microservices", "api", "agile", "ci/cd"}
     keywords = sorted({k for k in KEYWORDS if re.search(rf"\b{k}\b", lower)})
 
+    # Education
     edu_required = [kw for kw in EDU_KEYWORDS if kw in lower]
 
-    # required years
+    # Required years of experience
     req_years = 0
-    m = re.search(r"(\d+)\s*\+?\s*years?", lower)
+    m = re.search(r"(?:at least|min(?:imum) of)?\s*(\d+)\s*\+?\s*years?", lower)
     if m:
         req_years = int(m.group(1))
 

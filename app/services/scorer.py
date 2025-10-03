@@ -1,23 +1,18 @@
-# def match(resume: dict, jd: dict) -> float:
-#     # Basic overlap score (to be replaced with ML model)
-#     resume_skills = set(resume.get("skills", []))
-#     jd_skills = set(jd.get("skills", []))
-#     common = resume_skills & jd_skills
-#     return len(common) / max(len(jd_skills), 1) * 100
 
-# services/scorer.py
+import os, re
 from typing import Dict, Any, Tuple
 
+# Weights can be tuned from environment/config
 WEIGHTS = {
-    "skills": 0.60,
-    "experience": 0.20,
-    "education": 0.10,
-    "keywords": 0.10,
+    "skills": float(os.getenv("WEIGHT_SKILLS", 0.60)),
+    "experience": float(os.getenv("WEIGHT_EXPERIENCE", 0.20)),
+    "education": float(os.getenv("WEIGHT_EDUCATION", 0.10)),
+    "keywords": float(os.getenv("WEIGHT_KEYWORDS", 0.10)),
 }
 
 def _pct(numer: int, denom: int) -> float:
     if denom <= 0:
-        return 1.0  # if JD doesn’t specify, treat as satisfied
+        return 1.0  # treat as satisfied if JD doesn’t specify
     return max(0.0, min(1.0, numer / denom))
 
 def match(resume: Dict[str, Any], jd: Dict[str, Any]) -> Tuple[float, Dict[str, Any]]:
@@ -31,11 +26,11 @@ def match(resume: Dict[str, Any], jd: Dict[str, Any]) -> Tuple[float, Dict[str, 
 
     r_edu = set(resume.get("education", []))
     j_edu = set(jd.get("required_education", []))
-    edu_pct = 1.0 if not j_edu else (1.0 if (r_edu & j_edu) else 0.0)
+    edu_pct = 1.0 if not j_edu else _pct(len(r_edu & j_edu), len(j_edu))
 
     r_text = (resume.get("text") or "").lower()
     keywords = jd.get("keywords", [])
-    kw_hits = sum(1 for k in keywords if k in r_text)
+    kw_hits = sum(1 for k in keywords if re.search(rf"\b{k}\b", r_text))
     kw_pct = _pct(kw_hits, len(keywords))
 
     score = (
@@ -51,4 +46,5 @@ def match(resume: Dict[str, Any], jd: Dict[str, Any]) -> Tuple[float, Dict[str, 
         "education_pct": round(edu_pct, 3),
         "keywords_pct": round(kw_pct, 3),
     }
+
     return round(score, 1), breakdown

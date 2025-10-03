@@ -1,21 +1,29 @@
+
 from fastapi import FastAPI
-from app.api.v1.analyze import router as analyze_router
-from app.api.v1.uploads import router as upload_router
-from app.api.v1.health import router as health_router
 from fastapi.middleware.cors import CORSMiddleware
+from app.gateway import gateway
 
-app = FastAPI(title="Resume Analyzer")
+# Initialize FastAPI app
+app = FastAPI(
+    title="Resume Analyzer API",
+    description="Backend service for ATS scoring, suggestions, and job preparation.",
+    version="1.0.0",
+)
 
+# Middleware (for CORS)
+# Restrict allow_origins in production to only your frontend domains
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # for dev, later restrict to your web + mobile domains
+    allow_origins=["*"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Attach the gateway (facade) under /api/v1
+app.include_router(gateway, prefix="/api/v1")
 
-app = FastAPI(title="Resume Analyzer")
-app.include_router(health_router, prefix="/api/v1")
-app.include_router(upload_router, prefix="/api/v1")
-app.include_router(analyze_router, prefix="/api/v1")
+# Root endpoint (simple health check/info)
+@app.get("/", tags=["root"])
+def root():
+    return {"message": "Resume Analyzer API is running"}
