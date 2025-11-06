@@ -1,0 +1,24 @@
+
+<!DOCTYPE html>
+<div class="upload-container">
+  <h2>Upload Resume (PDF / DOCX)</h2>
+
+  <!-- File input -->
+  <input 
+    type="file" 
+    accept=".pdf,.doc,.docx"
+    (change)="onFileSelected($event)"
+  />
+
+  <!-- Upload button -->
+  <button (click)="onUpload()">Upload Resume</button>
+
+  <!-- Status / result section -->
+  <div *ngIf="uploadResult" class="upload-result">
+    <h3>Upload Successful!</h3>
+    <p><strong>File Key:</strong> {{ uploadResult.key }}</p>
+    <p>
+      <a [href]="uploadResult.url" target="_blank">Open Uploaded File</a>
+    </p>
+  </div>
+</div>

@@ -1,6 +1,8 @@
 # Web Framework
 fastapi
 uvicorn
+httpx
+redis
 
 # Cloud (AWS SDK)
 boto3

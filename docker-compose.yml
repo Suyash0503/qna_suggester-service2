@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  ats_scoring:
+    build: ./microservices/ats_scoring
+    container_name: ats_scoring
+    ports:
+      - "8000:8000"
+
+  resume_parser:
+    build: ./microservices/resume_parser
+    container_name: resume_parser
+    ports:
+      - "8001:8001"
+
+  job_matcher:
+    build: ./microservices/job_matcher
+    container_name: job_matcher
+    ports:
+      - "8002:8002"
+
+  qna_suggester:
+    build: ./microservices/qna_suggester
+    container_name: qna_suggester
+    ports:
+      - "8003:8003"
+
+  gateway:
+    build: ./app
+    container_name: resume_gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ats_scoring
+      - resume_parser
+      - job_matcher
+      - qna_suggester

@@ -1,73 +1,140 @@
+from fastapi import APIRouter, UploadFile, File, HTTPException, Form
+import httpx
+from storage import put_object  
+from db import save_analysis    
 
-from fastapi import APIRouter
-from app.models.schemas import (
-    AnalyzeRequest, AnalyzeResponse,
-    AnalyzeInput, ATSResponse, SuggestionResponse,
-    QuestionResponse, ExamInput, ExamResponse
-)
-from app.services import parse_resume, parse_jd, scorer, suggester, qna, db
+router = APIRouter(prefix="/analyze", tags=["ATS Scoring & Analysis"])
 
-router = APIRouter(tags=["analyze"])
+ATS_SCORING_URL = "http://127.0.0.1:8000/score"
 
 
-# ---------- Full Analysis (resume_key + jd_key from S3/Dynamo) ----------
-@router.post("/analyze", response_model=AnalyzeResponse)
-async def analyze(req: AnalyzeRequest):
-    # Parse stored resume and JD files
-    r = parse_resume.run(req.resume_key)
-    j = parse_jd.run(req.jd_key)
+@router.post("/file")
+async def analyze_from_files(
+    resume: UploadFile = File(...),
+    jd: UploadFile = File(...),
+):
+    """
+    Accepts two uploaded files (resume + JD),
+    uploads them to S3, extracts content as text,
+    and forwards to the ATS microservice for scoring.
+    Stores results in DynamoDB.
+    """
+    try:
+        resume_s3_key = put_object(resume)
+        jd_s3_key = put_object(jd)
 
-    # Compute score + suggestions
-    score, breakdown = scorer.match(r, j)
-    suggestions = suggester.rewrite(r, j)
+        resume_bytes = await resume.read()
+        jd_bytes = await jd.read()
 
-    # Prepare details for persistence
-    details = {
-        "breakdown": breakdown,
-        "resume": {
-            "name": r.get("name"), "email": r.get("email"), "phone": r.get("phone"),
-            "skills": r.get("skills"), "experience_years": r.get("experience_years"),
-        },
-        "jd": {
-            "job_title": j.get("job_title"), "required_skills": j.get("required_skills"),
-            "keywords": j.get("keywords"), "required_years": j.get("required_years")
+        resume_text = resume_bytes.decode("utf-8", errors="ignore")
+        jd_text = jd_bytes.decode("utf-8", errors="ignore")
+
+
+        resume_data = {
+            "skills": ["python", "aws", "fastapi"],
+            "experience_years": 3,
+            "education": ["B.Tech"],
+            "text": resume_text,
         }
-    }
 
-    # Save analysis in DynamoDB
-    db.save_analysis(resume_id=req.resume_key, job_id=req.jd_key, score=score, details=details)
+        jd_data = {
+            "required_skills": ["python", "aws", "docker"],
+            "required_years": 2,
+            "required_education": ["B.Tech"],
+            "keywords": ["engineer", "fastapi"],
+        }
 
-    return {"score": score, "suggestions": suggestions, "extracted": r}
+        payload = {
+            "user_id": "U001",
+            "resume": resume_data,
+            "jd": jd_data,
+        }
+
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(ATS_SCORING_URL, json=payload)
+            response.raise_for_status()
+            ats_result = response.json()
+
+        save_analysis(
+            user_id="U001",
+            parsed_resume=resume_data,
+            ats_score=ats_result.get("ats_score"),
+            job_matches=[] 
+        )
+
+        return {
+            "status": "success",
+            "resume_s3_key": resume_s3_key,
+            "jd_s3_key": jd_s3_key,
+            "ats_score": ats_result.get("ats_score"),
+            "breakdown": ats_result.get("breakdown"),
+        }
+
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="ATS microservice is unavailable.")
+    except httpx.ReadTimeout:
+        raise HTTPException(status_code=504, detail="ATS microservice timed out.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"File-based analysis failed: {e}")
 
 
-# ---------- Modular Endpoints (direct text input) ----------
-@router.post("/ats-score", response_model=ATSResponse)
-async def get_ats_score(data: AnalyzeInput):
-    # Here scorer.match returns (score, breakdown), so pick score only
-    score, _ = scorer.match(
-        {"skills": data.resume_text.split()}, 
-        {"required_skills": data.jd_text.split()}
-    )
-    return {"ats_score": score}
+@router.post("/text")
+async def analyze_from_text(
+    resume_text: str = Form(...),
+    jd_text: str = Form(...),
+):
+    """
+    Accept plain text inputs (resume + job description)
+    and send to ATS microservice for scoring.
+    Also stores results in DynamoDB.
+    """
+    try:
+        resume_data = {
+            "skills": resume_text.split(),
+            "experience_years": 2,
+            "education": ["B.Tech"],
+            "text": resume_text,
+        }
+
+        jd_data = {
+            "required_skills": jd_text.split(),
+            "required_years": 2,
+            "required_education": ["B.Tech"],
+            "keywords": jd_text.split(),
+        }
+
+        payload = {
+            "user_id": "demo_user",
+            "resume": resume_data,
+            "jd": jd_data,
+        }
 
 
-@router.post("/suggestions", response_model=SuggestionResponse)
-async def get_suggestions(data: AnalyzeInput):
-    # For modular text inputs, call suggester directly
-    suggestions = suggester.rewrite(
-        {"skills": data.resume_text.split(), "text": data.resume_text},
-        {"required_skills": data.jd_text.split(), "keywords": data.jd_text.split()}
-    )
-    return {"suggestions": suggestions}
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            response = await client.post(ATS_SCORING_URL, json=payload)
+            response.raise_for_status()
+            ats_result = response.json()
+
+        save_analysis(
+            user_id="demo_user",
+            parsed_resume=resume_data,
+            ats_score=ats_result.get("ats_score"),
+            job_matches=[]
+        )
+
+        return {
+            "status": "success",
+            "ats_score": ats_result.get("ats_score"),
+            "breakdown": ats_result.get("breakdown"),
+        }
+
+    except httpx.ConnectError:
+        raise HTTPException(status_code=503, detail="ATS microservice is unavailable.")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Text-based analysis failed: {e}")
 
 
-@router.post("/questions", response_model=QuestionResponse)
-async def generate_questions(data: AnalyzeInput):
-    questions = qna.generate(data.resume_text, data.jd_text)
-    return {"questions": questions}
-
-
-@router.post("/exam-score", response_model=ExamResponse)
-async def evaluate_exam(data: ExamInput):
-    score = qna.evaluate(data.answers)
-    return {"exam_score": score}
+@router.get("/health")
+def analyze_health():
+    """Simple health endpoint to confirm Analyze router is running."""
+    return {"status": "ok", "message": "Analyze router connected successfully to ATS microservice"}
