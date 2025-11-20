@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package ats;
+
+// gRPC service definition
+service ATSScoringService {
+  rpc ComputeScore (ScoreRequest) returns (ScoreResponse);
+}
+
+// ---------- Request Message ----------
+message ScoreRequest {
+  string user_id = 1;
+  string resume_text = 2;
+  repeated string resume_skills = 3;
+  int32 resume_experience_years = 4;
+  repeated string resume_education = 5;
+
+  string job_description = 6;
+  repeated string jd_required_skills = 7;
+  int32 jd_required_years = 8;
+  repeated string jd_required_education = 9;
+  repeated string jd_keywords = 10;
+}
+
+// ---------- Response Message ----------
+message ScoreResponse {
+  float score = 1;
+  float skills_pct = 2;
+  float experience_pct = 3;
+  float education_pct = 4;
+  float keywords_pct = 5;
+}

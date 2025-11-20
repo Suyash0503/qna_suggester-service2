@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  resume_parser:
+    build: ./microservices/resume_parser
+    container_name: resume_parser
+    ports:
+      - "8001:8001"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+
+  jd_parser:
+    build: ./microservices/jd_parser
+    container_name: jd_parser
+    ports:
+      - "8002:8002"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+
+  ats_scoring:
+    build: ./microservices/ats_scoring
+    container_name: ats_scoring
+    ports:
+      - "8003:8003"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+
+  gateway:
+    build:
+      context: ./microservices/gateway
+      dockerfile: Dockerfile
+    container_name: gateway
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./.env
+    depends_on:
+      - ats_scoring
+      - resume_parser
+      - jd_parser

@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+pydantic
+numpy
+torch
+transformers
+sentence-transformers
+rapidfuzz
+redis
+python-dotenv
+scikit-learn
+boto3
+botocore

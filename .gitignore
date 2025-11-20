@@ -1,3 +1,29 @@
+<<<<<<< HEAD
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+
+# Logs
+*.log
+=======
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -35,6 +61,7 @@ MANIFEST
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
+>>>>>>> d7f2dc221f74d7f4020f40ec3a95ec0350084cbf
 
 # Unit test / coverage reports
 htmlcov/
@@ -47,6 +74,51 @@ nosetests.xml
 coverage.xml
 *.cover
 *.py.cover
+<<<<<<< HEAD
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints
+
+# SQLite DB (if used locally)
+db.sqlite3
+db.sqlite3-journal
+
+# ========================
+# Node / Frontend
+# ========================
+node_modules/
+frontend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Build output
+/dist
+/build
+
+# ========================
+# Environment & secrets
+# ========================
+.env
+.envrc
+**/.env
+*.env
+# ========================
+# IDE / Editor
+# ========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ========================
+# OS specific
+# ========================
+.DS_Store
+Thumbs.db
+=======
 .hypothesis/
 .pytest_cache/
 cover/
@@ -205,3 +277,4 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+>>>>>>> d7f2dc221f74d7f4020f40ec3a95ec0350084cbf
