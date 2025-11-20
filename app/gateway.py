@@ -3,6 +3,8 @@ from app.api.v1.health import router as health_router
 from app.api.v1.resume import router as resume_router
 from app.api.v1.job import router as job_router
 from app.api.v1.analyze import router as analyze_router
+from app.api.v1.qna import router as qna_router
+
 
 # Central API Gateway Router
 gateway = APIRouter()
@@ -34,3 +36,5 @@ gateway.include_router(
     prefix="/analyze",
     tags=["ATS Scoring & Analysis"]
 )
+
+gateway.include_router(qna_router, prefix="/qna", tags=["QnA Suggester"])

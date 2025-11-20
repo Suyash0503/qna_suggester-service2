@@ -12,10 +12,12 @@ import logging
 # JOB_MATCHER_URL = "http://job_matcher:8002/match"
 # QNA_SUGGESTER_URL = "http://qna_suggester:8003/suggest"
 
-RESUME_PARSER_URL = "http://127.0.0.1:8001/parse"
-ATS_MICROSERVICE_URL = "http://127.0.0.1:8000/score"
-JOB_MATCHER_URL = "http://127.0.0.1:8002/match"
-QNA_SUGGESTER_URL = "http://127.0.0.1:8003/suggest"
+RESUME_PARSER_URL = os.getenv("RESUME_PARSER_URL", "http://resume-parser:8001/parse")
+ATS_MICROSERVICE_URL = os.getenv("ATS_MICROSERVICE_URL", "http://ats-scoring:8000/score")
+JOB_MATCHER_URL = os.getenv("JOB_MATCHER_URL", "http://job-matcher:8002/match")
+QNA_SUGGESTER_URL = os.getenv("QNA_SUGGESTER_URL", "http://qna-suggester:8003/suggest")
+
+
 
 
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
