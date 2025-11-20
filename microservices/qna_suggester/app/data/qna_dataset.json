@@ -1,0 +1,205 @@
+{
+  "python": {
+    "static_questions": [
+      "What is the difference between a list and a tuple?",
+      "Explain decorators in Python with an example.",
+      "What is the Global Interpreter Lock (GIL)?",
+      "How does Python handle memory management?",
+      "What are generators and how do they differ from iterators?"
+    ],
+    "ai_questions": [
+      "How would you debug a memory leak in a long-running Python service?",
+      "Explain how you'd optimize Python code that is CPU-bound.",
+      "Describe how you'd design a plugin-based architecture in Python.",
+      "What steps would you take to improve performance of a Python ETL pipeline?",
+      "How would you structure a Python service to handle 100k requests per minute?"
+    ]
+  },
+
+  "fastapi": {
+    "static_questions": [
+      "What is dependency injection in FastAPI?",
+      "How do you validate request models in FastAPI?",
+      "How does FastAPI handle async operations?",
+      "Explain BackgroundTasks in FastAPI.",
+      "What is the difference between middleware and dependencies?"
+    ],
+    "ai_questions": [
+      "How would you design a multi-tenant FastAPI microservice?",
+      "What steps would you take to secure a FastAPI API used in production?",
+      "How would you debug a delayed response in a FastAPI endpoint?",
+      "Explain how you'd scale FastAPI with workers and load balancers.",
+      "How would you implement rate limiting in FastAPI?"
+    ]
+  },
+
+  "docker": {
+    "static_questions": [
+      "What is the difference between a Docker container and an image?",
+      "Explain Docker layering in simple words.",
+      "How does Docker manage container networking?",
+      "What are Docker volumes and why are they important?",
+      "Explain the use of ENTRYPOINT vs CMD in Dockerfile."
+    ],
+    "ai_questions": [
+      "How would you optimize a large Docker image for production use?",
+      "Explain how you'd handle a failing container restart loop.",
+      "How would you secure secrets while building a Docker image?",
+      "Describe how you'd debug a slow container build.",
+      "How would you design a CI pipeline that builds and pushes Docker images?"
+    ]
+  },
+
+  "data structures": {
+    "static_questions": [
+      "Explain stack vs queue with examples.",
+      "What is the difference between an array and a linked list?",
+      "How do you detect a cycle in a linked list?",
+      "Explain binary tree traversal orders.",
+      "What is a hash table?"
+    ],
+    "ai_questions": [
+      "How would you optimize a graph traversal algorithm for large datasets?",
+      "Describe how you'd redesign a hash map that is causing many collisions.",
+      "What strategy would you use to detect memory fragmentation in data structures?",
+      "How would you implement a thread-safe LRU cache?",
+      "What approach would you take to scale graph search to millions of nodes?"
+    ]
+  },
+
+  "algorithms": {
+    "static_questions": [
+      "Explain time complexity for merge sort.",
+      "What is dynamic programming?",
+      "Explain greedy vs divide and conquer.",
+      "How do you detect a cycle in a directed graph?",
+      "What are common tree balancing techniques?"
+    ],
+    "ai_questions": [
+      "How would you optimize Dijkstra for dense graphs?",
+      "What heuristics would you use to improve search algorithms?",
+      "How would you rewrite a recursive algorithm to reduce stack usage?",
+      "How would you detect performance regression in an algorithm?",
+      "Explain how you'd design an algorithm for real-time sensor processing."
+    ]
+  },
+
+  "kd tree": {
+    "static_questions": [
+      "How does a KD-tree partition multidimensional space?",
+      "Explain nearest-neighbor search in a KD-tree.",
+      "What is the complexity of KD-tree construction?",
+      "Compare KD-tree and R-tree.",
+      "Why do KD-trees fail in high-dimensional spaces?"
+    ],
+    "ai_questions": [
+      "How would you redesign a KD-tree for dynamic datasets?",
+      "Describe how you'd optimize KD-tree search for real-time robotics.",
+      "What approach would you take if your KD-tree lookup becomes slow due to dimension increase?",
+      "How would you handle balancing KD-trees in streaming data?",
+      "Explain how you'd integrate KD-tree indexing in a large ML system."
+    ]
+  },
+
+  "machine learning": {
+    "static_questions": [
+      "What is overfitting?",
+      "Explain gradient descent.",
+      "What is the bias-variance tradeoff?",
+      "Explain difference between bagging and boosting.",
+      "How do you deploy ML models?"
+    ],
+    "ai_questions": [
+      "How would you detect model drift in a production system?",
+      "Explain how you'd handle imbalanced datasets in real-world ML.",
+      "What steps would you take if your model accuracy suddenly dropped?",
+      "How would you redesign a pipeline that processes 10 million predictions per day?",
+      "Describe how you'd reduce inference latency for a transformer model."
+    ]
+  },
+
+  "optimization": {
+    "static_questions": [
+      "How do you optimize a slow SQL query?",
+      "Define time vs space complexity.",
+      "What is memoization?",
+      "What are common cache eviction strategies?",
+      "What is profiling?"
+    ],
+    "ai_questions": [
+      "How would you trace and profile a slow API endpoint?",
+      "Describe how you'd reduce memory usage of a backend worker.",
+      "How would you scale a system suffering from high tail latency?",
+      "Explain how you'd optimize microservices causing cascading failures.",
+      "What approach would you take to reduce p99 latency?"
+    ]
+  },
+
+  "system design": {
+    "static_questions": [
+      "How would you design a URL shortener?",
+      "Explain load balancing.",
+      "What is database sharding?",
+      "Explain cache invalidation strategies.",
+      "What is the CAP theorem?"
+    ],
+    "ai_questions": [
+      "How would you redesign a high-traffic API to handle 100× load?",
+      "Describe how you'd detect and recover from partial outages.",
+      "How would you scale a message queue that is frequently backlogged?",
+      "Explain how you'd design a failover system for a payment processor.",
+      "How would you structure a microservice architecture to avoid cascading failures?"
+    ]
+  },
+
+  "cloud": {
+    "static_questions": [
+      "Explain IaaS vs PaaS vs SaaS.",
+      "What is auto scaling?",
+      "What is Terraform?",
+      "How do you secure secrets in cloud?",
+      "What is a VPC?"
+    ],
+    "ai_questions": [
+      "How would you design cross-region failover on AWS?",
+      "Explain your approach to diagnosing slow Lambda performance.",
+      "How would you secure S3 buckets in an enterprise environment?",
+      "Describe how you'd scale ECS services for unpredictable workloads.",
+      "How would you handle API throttling by AWS service limits?"
+    ]
+  },
+
+  "backend": {
+    "static_questions": [
+      "Explain REST vs GraphQL.",
+      "What are ACID transactions?",
+      "What is database indexing?",
+      "What is a message broker?",
+      "Define idempotency in APIs."
+    ],
+    "ai_questions": [
+      "How would you design a backend service that must never lose data?",
+      "How would you migrate a monolithic API to microservices?",
+      "What is your approach to debugging DB locking issues?",
+      "How would you design rate limiting for public APIs?",
+      "Explain how you'd implement multi-region active-active backend."
+    ]
+  },
+
+  "security": {
+    "static_questions": [
+      "What is OAuth2?",
+      "Explain JWT token structure.",
+      "What is encryption vs hashing?",
+      "What is CSRF?",
+      "Explain SQL injection."
+    ],
+    "ai_questions": [
+      "How would you react if AWS keys were leaked?",
+      "Explain your process for auditing a microservice for vulnerabilities.",
+      "How would you design secure secret rotation?",
+      "What steps would you take to prevent session hijacking?",
+      "Explain how you'd handle a zero-day vulnerability in production."
+    ]
+  }
+}

@@ -8,7 +8,7 @@ from microservices.gateway.app.main import gateway
 from app.infra.storage import put_object
 from app.infra.db import save_analysis
 
-app = FastAPI(title="Resume Analyzer API Gateway", version="2.0")
+app = FastAPI(title="Resume Analyzer API", version="2.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -22,6 +22,7 @@ app.add_middleware(
 RESUME_PARSER_URL = os.getenv("RESUME_PARSER_URL", "http://127.0.0.1:8001/parse")
 JD_PARSER_URL      = os.getenv("JD_PARSER_URL", "http://127.0.0.1:8002/parse-jd")
 ATS_SCORING_URL    = os.getenv("ATS_SCORING_URL", "http://127.0.0.1:8003/score")
+QNA_SUGGESTER_URL = os.getenv("QNA_SUGGESTER_URL", "http://qna-suggester:8003/suggest")
 logging.basicConfig(level=logging.INFO)
 
 

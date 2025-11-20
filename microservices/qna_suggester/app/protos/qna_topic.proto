@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package qtopics;
+
+message TopicQuestions {
+  string topic = 1;
+  repeated string static_questions = 2;
+  repeated string ai_questions = 3;
+  repeated string merged = 4;
+}
+
+message CachedQnA {
+  repeated TopicQuestions topics = 1;
+  repeated string suggestions = 2;
+}

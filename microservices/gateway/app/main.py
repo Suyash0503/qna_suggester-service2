@@ -37,7 +37,14 @@ app.include_router(
     prefix="/analyze",
     tags=["ATS Scoring & Analysis"]
 )
+#QNA Microservice
+app.include_router(
+    analyze_router,
+    prefix="/qna", 
+    tags=["QnA Suggester"]
+)
 
 @app.get("/")
 def root():
     return {"status": "ok", "message": "Gateway is running"}
+

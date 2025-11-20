@@ -1,9 +1,16 @@
 FROM python:3.11-slim
 
 WORKDIR /app
-COPY ../../requirements.txt .
+
+# Copy dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy microservice contents
 COPY . .
 
-EXPOSE 8003
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003"]
+# Expose port for FastAPI
+EXPOSE 80
+USER root 
+# Run QnA microservice
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "80"]
