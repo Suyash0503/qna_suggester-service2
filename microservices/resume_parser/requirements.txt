@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+python-dotenv
+boto3
+transformers
+torch
+sentencepiece
+python-docx
+pymupdf
+regex
+pydantic
+python-multipart
